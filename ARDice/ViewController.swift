@@ -20,14 +20,17 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Set the view's delegate
         sceneView.delegate = self
         
-      
+        sceneView.automaticallyUpdatesLighting = true
         
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let cubeScene = SCNScene(named: "art.scnassets/mine.scn")!
         
-        // Set the scene to the view
-        sceneView.scene = scene
+        if let cubeNode = cubeScene.rootNode.childNode(withName: "mine", recursively: true){
+        
+            cubeNode.position = SCNVector3(x:0, y:0.1, z:-0.5)
+            sceneView.scene.rootNode.addChildNode(cubeNode)
+       
     }
+}
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
