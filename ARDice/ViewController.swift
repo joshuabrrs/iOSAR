@@ -24,14 +24,14 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         sceneView.automaticallyUpdatesLighting = true
         
-        let cubeScene = SCNScene(named: "art.scnassets/mine.scn")!
-        
-        if let cubeNode = cubeScene.rootNode.childNode(withName: "mine", recursively: true){
-        
-            cubeNode.position = SCNVector3(x:0, y:0.1, z:-0.5)
-            sceneView.scene.rootNode.addChildNode(cubeNode)
-       
-    }
+//        let cubeScene = SCNScene(named: "art.scnassets/mine.scn")!
+//
+//        if let cubeNode = cubeScene.rootNode.childNode(withName: "mine", recursively: true){
+//
+//            cubeNode.position = SCNVector3(x:0, y:0.1, z:-0.5)
+//            sceneView.scene.rootNode.addChildNode(cubeNode)
+//
+//    }
 }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,7 +52,24 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-    //this is where we set up our horizontal plane
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first{
+            let touchLoc = touch.location(in: sceneView)
+            
+            let results = sceneView.hitTest(touchLoc, types: .featurePoint)
+            //checking if results is NOT empty
+            if let hitResult = results.first{
+                let mineScene = SCNScene(named: "art.scnassets/mine.scn")
+                if let mineNode = mineScene!.rootNode.childNode(withName: "mine", recursively: true){
+                    mineNode.position = SCNVector3(x: hitResult.worldTransform.columns.3.x,
+                                                   y: hitResult.worldTransform.columns.3.y,
+                                                   z: hitResult.worldTransform.columns.3.z)
+                    sceneView.scene.rootNode.addChildNode(mineNode)
+                }
+            }
+        }
+    }
+    //this is where I set up the horizontal plane
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if anchor is ARPlaneAnchor{
             let planeAnchor = anchor as! ARPlaneAnchor
